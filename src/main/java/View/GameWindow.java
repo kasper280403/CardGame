@@ -48,7 +48,7 @@ public class GameWindow {
         HBox buttonBox = new HBox(20);
         buttonBox.setStyle("-fx-alignment: center;");
 
-        Button handOutButton = new Button("Hand out card");
+        Button handOutButton = new Button("Deal");
         handOutButton.setOnAction(e -> handOutCard());
 
         Button reshuffleButton = new Button("Reshuffle");
@@ -61,10 +61,15 @@ public class GameWindow {
     private void handOutCard() {
         ArrayList<String> imgURL = gameLogic.deal(5);
         updateCardHBox(imgURL);
+
     }
 
     private void reshuffle() {
         // Implementeres senere
+    }
+
+    private void disableHandOutButton() {
+
     }
 
     private void setBackground() {

@@ -26,4 +26,9 @@ public class GameLogic {
         return imgURL;
     }
 
+    public Boolean toFewCards(int numberOfCards) {
+        return numberOfCards <= deck.cardsLeftInDeck();
+    }
+
+
 }
