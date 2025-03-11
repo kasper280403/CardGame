@@ -12,7 +12,7 @@ public class Start extends Application {
         primaryStage.setTitle("Card Game");
         Button button = new Button("Play");
         button.setOnAction(e -> {
-            new GameWindow();
+            GameWindow gameWindow = new GameWindow(primaryStage);
         });
         Scene scene = new Scene(button, 300, 200);;
         primaryStage.setScene(scene);

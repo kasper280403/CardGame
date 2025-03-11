@@ -32,7 +32,7 @@ public class GameWindow {
     }
 
     private void setBackground() {
-        Image backgroundImage = new Image("src/main/resources/background.jpg");
+        Image backgroundImage = new Image("background.jpg");
         BackgroundImage background = new BackgroundImage(backgroundImage,
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, true, false));
