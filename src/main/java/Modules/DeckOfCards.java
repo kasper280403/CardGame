@@ -1,3 +1,5 @@
+package Modules;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -12,8 +14,7 @@ public class DeckOfCards {
         for (int i = 0; i < n; i++) {
             for (int v = 1; v < 14; v++) {
                 for (int s = 1; s < 4; s++) {
-                    String imgURL = suits.get(s) + "_" + v + ".png";
-                    Card card = new Card(v, suits.get(s), imgURL);
+                    Card card = new Card(v, suits.get(s));
                     cards.add(card);
                 }
             }
@@ -25,7 +26,6 @@ public class DeckOfCards {
         if (this.cards.isEmpty()) {
             throw new IllegalArgumentException("Deck is empty");
         }
-
 
         Random random = new Random();
         for (int i = 0; i < n; i++) {

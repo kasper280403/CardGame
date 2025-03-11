@@ -9,7 +9,7 @@ public class Start extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Card Game");
+        primaryStage.setTitle("Modules.Card Game");
         Button button = new Button("Play");
         button.setOnAction(e -> {
             GameWindow gameWindow = new GameWindow(primaryStage);

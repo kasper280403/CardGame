@@ -1,23 +1,34 @@
 package View;
 
+import Modules.GameLogic;
+import javafx.animation.PauseTransition;
+import javafx.animation.ScaleTransition;
+import javafx.animation.SequentialTransition;
+import javafx.animation.TranslateTransition;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import java.util.ArrayList;
 
 public class GameWindow {
 
     private StackPane root;
+    GameLogic gameLogic;
+    private HBox cardBox;
 
     public GameWindow(Stage stage) {
         stage.setTitle("Card Game");
 
+        gameLogic = new GameLogic();
+
         root = new StackPane();
         setBackground();
 
-        HBox cardBox = createCardHBox();
+        cardBox = createCardHBox();
         ImageView deckImage = createDeckImage();
         HBox buttonBox = createButtonBox();
 
@@ -48,7 +59,8 @@ public class GameWindow {
     }
 
     private void handOutCard() {
-        // Implementeres senere
+        ArrayList<String> imgURL = gameLogic.deal(5);
+        updateCardHBox(imgURL);
     }
 
     private void reshuffle() {
@@ -75,15 +87,49 @@ public class GameWindow {
     }
 
     private HBox createCardHBox() {
-        HBox hbox = new HBox(10);
-        for (int i = 1; i <= 5; i++) {
-            ImageView card = new ImageView(new Image("cards/clubs_" + i + ".png"));
+        cardBox = new HBox(10);
+        for (int i = 0; i <= 4; i++) {
+            ImageView card = new ImageView(new Image("cards/back_light.png"));
             card.setFitHeight(150);
             card.setFitWidth(100);
-            hbox.getChildren().add(card);
+            cardBox.getChildren().add(card);
         }
-        hbox.setStyle("-fx-alignment: center;");
-        return hbox;
+        cardBox.setStyle("-fx-alignment: center;");
+        return cardBox;
+    }
+
+    private void updateCardHBox(ArrayList<String> imgURL) {
+        cardBox.getChildren().clear();
+
+        for (int i = 0; i < imgURL.size(); i++) {
+            String url = imgURL.get(i);
+            ImageView card = new ImageView(new Image("cards/back_dark.png"));
+            card.setFitHeight(150);
+            card.setFitWidth(100);
+            cardBox.getChildren().add(card);
+
+            TranslateTransition slide = new TranslateTransition(Duration.millis(300), card);
+            slide.setFromY(-50);
+            slide.setToY(0);
+
+            PauseTransition pause = new PauseTransition(Duration.millis(200));
+
+            ScaleTransition flip = new ScaleTransition(Duration.millis(300), card);
+            flip.setFromX(1);
+            flip.setToX(0);
+
+            flip.setOnFinished(event -> {
+                card.setImage(new Image(url));
+                ScaleTransition flipBack = new ScaleTransition(Duration.millis(300), card);
+                flipBack.setFromX(0);
+                flipBack.setToX(1);
+                flipBack.play();
+            });
+
+            SequentialTransition sequence = new SequentialTransition(slide, pause, flip);
+            sequence.setDelay(Duration.millis(i * 400));
+            sequence.play();
+        }
     }
 
     private ImageView createDeckImage() {

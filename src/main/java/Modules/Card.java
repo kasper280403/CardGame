@@ -1,13 +1,15 @@
+package Modules;
+
 public class Card {
 
     int value;
     String suit;
     String imgURL;
 
-    public Card(int value, String suit, String imgURL) {
+    public Card(int value, String suit) {
         this.value = value;
         this.suit = suit;
-        this.imgURL = imgURL;
+        this.imgURL = "cards/" + suit + "_" + value + ".png";;
     }
 
     public int getValue() {
