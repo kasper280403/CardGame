@@ -1,0 +1,17 @@
+.root {
+    -fx-background-color: linear-gradient(to bottom, #004d00, #001a00);
+}
+
+.button {
+    -fx-font-size: 14px;
+    -fx-background-color: #ffcc00;
+    -fx-text-fill: black;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #ffaa00;
+}
