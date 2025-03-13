@@ -17,7 +17,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class GameWindow {
 
@@ -244,15 +243,12 @@ public class GameWindow {
         Text spadeDame = new Text("Spade Dame: ");
         Text sum = new Text("Sum: ");
 
-        flush.getStyleClass().add("status-text");
-        hearts.getStyleClass().add("status-text");
+        flush.setStyle("-fx-text-fill: #ffcc00;\n -fx-font-size: 14px;");
+        hearts.setStyle("-fx-text-fill: #ffcc00;\n -fx-font-size: 14px;");
         spadeDame.getStyleClass().add("status-text");
         sum.getStyleClass().add("status-text");
 
         statusBox.getChildren().addAll(flush, hearts, spadeDame, sum);
-
-        statusBox.applyCss();
-        statusBox.layout();
 
         return statusBox;
     }

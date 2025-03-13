@@ -65,7 +65,7 @@ public class GameLogic {
         boolean spadeDame = false;
         int sum = 0;
         for (Card card : currentHand) {
-            if (card.toString().equals("spade13")) {
+            if (card.toString().equals("spades12")) {
                 spadeDame = true;
             }
             sum += card.getValue();
