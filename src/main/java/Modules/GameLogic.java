@@ -4,11 +4,13 @@ import View.GameWindow;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GameLogic {
 
     DeckOfCards deck;
     int currentAmountOfDecks = 0;;
+    ArrayList<Card> currentHand;
 
     public GameLogic() {
         createDeck(1);
@@ -29,6 +31,7 @@ public class GameLogic {
         for (Card card : cards) {
             imgURL.add(card.getImgURL());
         }
+        currentHand = cards;
         return imgURL;
     }
 
@@ -38,6 +41,44 @@ public class GameLogic {
 
     public void reShuffle(){
         createDeck(currentAmountOfDecks);
+    }
+
+
+    public ArrayList<Object> handStatus() {
+
+        ArrayList<Object> handStatus = new ArrayList<>();
+
+
+        boolean flush = currentHand.stream()
+                .map(card -> card.suit)
+                .distinct()
+                .count() == 1;
+
+        List<String> hearts = currentHand.stream()
+                 .filter(card -> "hearts".equals(card.suit))
+                 .map(Card::toString)
+                 .toList();
+
+        String heartsString = String.join(", ", hearts);
+
+
+        boolean spadeDame = false;
+        int sum = 0;
+        for (Card card : currentHand) {
+            if (card.toString().equals("spade13")) {
+                spadeDame = true;
+            }
+            sum += card.getValue();
+        }
+
+
+        handStatus.add(flush);
+        handStatus.add(heartsString);
+        handStatus.add(spadeDame);
+        handStatus.add(sum);
+
+        return handStatus;
+
     }
 
 

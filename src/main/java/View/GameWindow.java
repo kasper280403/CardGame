@@ -13,9 +13,11 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class GameWindow {
 
@@ -24,6 +26,7 @@ public class GameWindow {
     private HBox cardBox;
     private HBox buttonBox;
     private VBox changeDeck;
+    public VBox statusBox;
 
     public GameWindow(Stage stage) {
         stage.setTitle("Card Game");
@@ -37,11 +40,14 @@ public class GameWindow {
         ImageView deckImage = createDeckImage();
         buttonBox = createButtonBox();
 
+        statusBox = statusBox();
+        statusBox.setAlignment(Pos.TOP_RIGHT);
+
         changeDeck = nDecks();
         StackPane.setAlignment(changeDeck, Pos.TOP_LEFT);
 
 
-        VBox layout = new VBox(10,changeDeck, deckImage, cardBox, buttonBox);
+        VBox layout = new VBox(10,changeDeck,statusBox, deckImage, cardBox, buttonBox);
         layout.setStyle("-fx-alignment: center;");
 
         HBox finalLayer = new HBox(changeDeck, layout);
@@ -51,9 +57,11 @@ public class GameWindow {
 
         Scene scene = new Scene(root, 900, 500);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+
         stage.setScene(scene);
         stage.centerOnScreen();
         stage.show();
+        System.out.println(getClass().getResource("/style.css"));
     }
 
     private HBox createButtonBox() {
@@ -75,6 +83,8 @@ public class GameWindow {
 
         if(!imgURL.isEmpty()){
             updateCardHBox(imgURL);
+            ArrayList<Object> obj = gameLogic.handStatus();
+            changeStatusBox((Boolean) obj.getFirst(),(String) obj.get(1), (Boolean)obj.get(2), (int) obj.getLast());
         } else{
             outOfCards();
         }
@@ -209,6 +219,10 @@ public class GameWindow {
             reshuffle();
         });
 
+        oneDeck.setPrefWidth(100);
+        twoDecks.setPrefWidth(100);
+        threeDecks.setPrefWidth(100);
+        fourDecks.setPrefWidth(100);
 
         deckMenu.getChildren().addAll(label, oneDeck, twoDecks, threeDecks, fourDecks);
 
@@ -220,5 +234,55 @@ public class GameWindow {
         deckImage.setFitHeight(150);
         deckImage.setFitWidth(100);
         return deckImage;
+    }
+
+    public VBox statusBox(){
+        VBox statusBox = new VBox(10);
+
+        Text flush = new Text("Flush: ");
+        Text hearts = new Text("Hearts: ");
+        Text spadeDame = new Text("Spade Dame: ");
+        Text sum = new Text("Sum: ");
+
+        flush.getStyleClass().add("status-text");
+        hearts.getStyleClass().add("status-text");
+        spadeDame.getStyleClass().add("status-text");
+        sum.getStyleClass().add("status-text");
+
+        statusBox.getChildren().addAll(flush, hearts, spadeDame, sum);
+
+        statusBox.applyCss();
+        statusBox.layout();
+
+        return statusBox;
+    }
+
+    public void changeStatusBox(Boolean flush, String hearts, Boolean spadeDame, int sum) {
+
+        Text flushT;
+        if(flush){
+            flushT = new Text("Flush: Yes");
+        } else{
+            flushT = new Text("Flush: No");
+        }
+        Text heartsT = new Text("Hearts: "+hearts);
+
+        Text spadeDameT;
+        if(spadeDame){
+            spadeDameT = new Text("Spade Dame: Yes");
+        } else{
+            spadeDameT = new Text("Spade Dame: No");
+        }
+
+        Text sumT = new Text("Sum: "+sum);
+
+        flushT.getStyleClass().add("status-text");
+        heartsT.getStyleClass().add("status-text");
+        spadeDameT.getStyleClass().add("status-text");
+        sumT.getStyleClass().add("status-text");
+
+        statusBox.getChildren().clear();
+        statusBox.getChildren().addAll(flushT, heartsT, spadeDameT, sumT);
+
     }
 }
