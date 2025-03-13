@@ -5,8 +5,11 @@ import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -19,6 +22,8 @@ public class GameWindow {
     private StackPane root;
     GameLogic gameLogic;
     private HBox cardBox;
+    private HBox buttonBox;
+    private VBox changeDeck;
 
     public GameWindow(Stage stage) {
         stage.setTitle("Card Game");
@@ -30,15 +35,22 @@ public class GameWindow {
 
         cardBox = createCardHBox();
         ImageView deckImage = createDeckImage();
-        HBox buttonBox = createButtonBox();
+        buttonBox = createButtonBox();
 
-        VBox layout = new VBox(10, deckImage, cardBox, buttonBox);
+        changeDeck = nDecks();
+        StackPane.setAlignment(changeDeck, Pos.TOP_LEFT);
+
+
+        VBox layout = new VBox(10,changeDeck, deckImage, cardBox, buttonBox);
         layout.setStyle("-fx-alignment: center;");
-        layout.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 
-        root.getChildren().add(layout);
+        HBox finalLayer = new HBox(changeDeck, layout);
+
+        root.getChildren().add(finalLayer);
+
 
         Scene scene = new Scene(root, 900, 500);
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         stage.setScene(scene);
         stage.centerOnScreen();
         stage.show();
@@ -60,16 +72,44 @@ public class GameWindow {
 
     private void handOutCard() {
         ArrayList<String> imgURL = gameLogic.deal(5);
-        updateCardHBox(imgURL);
+
+        if(!imgURL.isEmpty()){
+            updateCardHBox(imgURL);
+        } else{
+            outOfCards();
+        }
 
     }
 
     private void reshuffle() {
-        // Implementeres senere
+        gameLogic.reShuffle();
+        enableHandOutButton();
+        handOutCard();
     }
 
-    private void disableHandOutButton() {
+    public void disableHandOutButton() {
+        for (javafx.scene.Node node : buttonBox.getChildren()) {
+            if (node instanceof Button && ((Button) node).getText().equals("Deal")) {
+                node.setDisable(true);
+            }
+        }
+    }
 
+    public void enableHandOutButton() {
+        for (javafx.scene.Node node : buttonBox.getChildren()) {
+            if (node instanceof Button && ((Button) node).getText().equals("Deal")) {
+                node.setDisable(false);
+            }
+        }
+    }
+
+    public void outOfCards(){
+        disableHandOutButton();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Empty");
+        alert.setHeaderText(null);
+        alert.setContentText("Not enough cards to deal. You need to reshuffle.");
+        alert.showAndWait();
     }
 
     private void setBackground() {
@@ -103,8 +143,10 @@ public class GameWindow {
         return cardBox;
     }
 
-    private void updateCardHBox(ArrayList<String> imgURL) {
+    public void updateCardHBox(ArrayList<String> imgURL) {
         cardBox.getChildren().clear();
+        disableHandOutButton();
+
 
         for (int i = 0; i < imgURL.size(); i++) {
             String url = imgURL.get(i);
@@ -133,8 +175,44 @@ public class GameWindow {
 
             SequentialTransition sequence = new SequentialTransition(slide, pause, flip);
             sequence.setDelay(Duration.millis(i * 400));
+            sequence.setOnFinished(event -> enableHandOutButton());
             sequence.play();
         }
+    }
+
+    private VBox nDecks(){
+        VBox deckMenu = new VBox(10);
+        Label label = new Label("Choose deck amount:");
+        label.setStyle("-fx-text-fill: #ffcc00; -fx-font-size: 20px;");
+
+        Button oneDeck = new Button("One");
+        oneDeck.setOnAction(e -> {
+            gameLogic.createDeck(1);
+            reshuffle();
+        });
+
+        Button twoDecks = new Button("Two");
+        twoDecks.setOnAction(e -> {
+            gameLogic.createDeck(2);
+            reshuffle();
+        });
+
+        Button threeDecks = new Button("Three");
+        threeDecks.setOnAction(e -> {
+            gameLogic.createDeck(3);
+            reshuffle();
+        });
+
+        Button fourDecks = new Button("Four");
+        fourDecks.setOnAction(e -> {
+            gameLogic.createDeck(4);
+            reshuffle();
+        });
+
+
+        deckMenu.getChildren().addAll(label, oneDeck, twoDecks, threeDecks, fourDecks);
+
+        return deckMenu;
     }
 
     private ImageView createDeckImage() {
