@@ -1,7 +1,5 @@
 package Modules;
 
-import View.GameWindow;
-import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +7,7 @@ import java.util.List;
 public class GameLogic {
 
     DeckOfCards deck;
-    int currentAmountOfDecks = 0;;
+    int currentAmountOfDecks = 0;
     ArrayList<Card> currentHand;
 
     public GameLogic() {
@@ -25,7 +23,7 @@ public class GameLogic {
     public ArrayList<String> deal(int numberOfCards) {
         ArrayList<String> imgURL = new ArrayList<>();
         ArrayList<Card> cards = deck.getCards(numberOfCards);
-        if (cards == null || cards.size() == 0) {
+        if (cards == null || cards.isEmpty()) {
             return imgURL;
         }
         for (Card card : cards) {
